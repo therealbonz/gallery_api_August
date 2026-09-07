@@ -1,3 +1,20 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  namespace :api do
+    namespace :v1 do
+      resources :photos, only: [:index, :show, :create, :destroy] do
+        collection do
+          post :batch, to: 'photos#create_batch'
+        end
+        member do
+          get :image
+          post :reactions, to: 'reactions#toggle'
+        end
+        resources :comments, only: [:index, :create]
+      end
+      resources :comments, only: [:destroy]
+      post '/signup', to: 'users#create'
+      post '/login', to: 'sessions#create'
+      get '/me', to: 'sessions#me'
+    end
+  end
 end
