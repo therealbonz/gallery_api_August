@@ -29,3 +29,9 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore bundled gems installed to vendor/bundle
+/vendor/bundle
+
+# Ignore Windows WSL zone identifier files
+*.Zone.Identifier
