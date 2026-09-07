@@ -83,6 +83,19 @@ module Api
         render json: { message: 'Photo deleted successfully' }, status: :ok
       end
 
+      # GET /api/v1/download/apk
+      def download_apk
+        apk_path = Rails.root.join('public', 'My3DCube.apk')
+        if File.exist?(apk_path)
+          send_file apk_path,
+                    filename: 'My3DCube.apk',
+                    type: 'application/vnd.android.package-archive',
+                    disposition: 'attachment'
+        else
+          render json: { error: 'APK file not found on server' }, status: :not_found
+        end
+      end
+
       private
 
       def set_photo

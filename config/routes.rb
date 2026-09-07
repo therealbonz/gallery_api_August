@@ -12,6 +12,7 @@ Rails.application.routes.draw do
         resources :comments, only: [:index, :create]
       end
       resources :comments, only: [:destroy]
+      get '/download/apk', to: 'photos#download_apk'
       post '/signup', to: 'users#create'
       post '/login', to: 'sessions#create'
       get '/me', to: 'sessions#me'
