@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       end
       resources :comments, only: [:destroy]
       get '/download/apk', to: 'photos#download_apk'
+      get '/download/exe', to: 'photos#download_exe'
       post '/signup', to: 'users#create'
       post '/login', to: 'sessions#create'
       get '/me', to: 'sessions#me'

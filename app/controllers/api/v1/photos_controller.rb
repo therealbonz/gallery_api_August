@@ -96,6 +96,19 @@ module Api
         end
       end
 
+      # GET /api/v1/download/exe
+      def download_exe
+        exe_path = Rails.root.join('public', 'My3DCubeWallpaper.exe')
+        if File.exist?(exe_path)
+          send_file exe_path,
+                    filename: 'My3DCubeWallpaper.exe',
+                    type: 'application/vnd.microsoft.portable-executable',
+                    disposition: 'attachment'
+        else
+          render json: { error: 'Windows executable file not found on server' }, status: :not_found
+        end
+      end
+
       private
 
       def set_photo
