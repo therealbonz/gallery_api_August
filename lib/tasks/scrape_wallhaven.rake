@@ -1,4 +1,4 @@
-﻿require "json"
+require "json"
 require "tempfile"
 require "uri"
 
@@ -67,4 +67,16 @@ namespace :photos do
 
     puts "Finished! Total photos in gallery: #{Photo.count}"
   end
+
+  desc "Scrape 100 images across tech, music, movie, tv, synthwave/mtv"
+  task scrape_multicategory: :environment do
+    categories = ["tech", "music", "movie", "tv", "synthwave"]
+    categories.each do |cat|
+      puts "\n=== Starting #{cat.upcase} Wallpapers (Target: 20) ==="
+      Rake::Task["photos:scrape_wallhaven"].reenable
+      Rake::Task["photos:scrape_wallhaven"].invoke(cat, 20)
+    end
+    puts "\n🎉 Successfully finished scraping all categories! Total photos in gallery: #{Photo.count}"
+  end
 end
+
