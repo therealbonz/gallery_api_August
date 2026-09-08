@@ -109,6 +109,19 @@ module Api
         end
       end
 
+      # GET /api/v1/download/linux
+      def download_linux
+        tar_path = Rails.root.join('public', 'My3DCube-Linux.tar.gz')
+        if File.exist?(tar_path)
+          send_file tar_path,
+                    filename: 'My3DCube-Linux.tar.gz',
+                    type: 'application/gzip',
+                    disposition: 'attachment'
+        else
+          render json: { error: 'Linux package file not found on server' }, status: :not_found
+        end
+      end
+
       private
 
       def set_photo
