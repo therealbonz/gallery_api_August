@@ -1,5 +1,5 @@
-﻿require "open-uri"
-require "json"
+﻿require "json"
+require "tempfile"
 
 namespace :photos do
   desc "Scrape and seed high-resolution PG-rated photography from Lorem Picsum (Curated Safe-For-Work collection)"
@@ -7,9 +7,13 @@ namespace :photos do
     count = (args[:count] || 15).to_i
     puts "Fetching #{count} curated PG-rated photographs from Lorem Picsum..."
 
-    url = "https://picsum.photos/v2/list?page=1&limit=#{count}"
-    response = URI.open(url, "User-Agent" => "Mozilla/5.0").read
-    items = JSON.parse(response)
+    json_str = `curl -s -L "https://picsum.photos/v2/list?page=2&limit=#{count}"`
+    items = JSON.parse(json_str) rescue []
+
+    if items.empty?
+      puts "No items returned from Picsum."
+      next
+    end
 
     user = User.first
 
@@ -21,18 +25,28 @@ namespace :photos do
       desc = "Curated high-res photography by #{author} via Picsum"
 
       puts "[#{idx + 1}/#{items.length}] Downloading #{title} (#{download_url})..."
-      begin
-        tempfile = URI.open(download_url, "User-Agent" => "Mozilla/5.0")
-        photo = Photo.new(title: title, description: desc, user: user)
-        photo.image.attach(io: tempfile, filename: "picsum_#{id}.jpg", content_type: "image/jpeg")
+      temp_file = Tempfile.new(["picsum_#{id}", ".jpg"])
+      temp_file.binmode
 
-        if photo.save
-          puts "  -> Successfully saved Photo ID: #{photo.id}"
+      begin
+        success = system("curl", "-s", "-L", "-o", temp_file.path, download_url)
+        if success && File.size?(temp_file.path)
+          photo = Photo.new(title: title, description: desc, user: user)
+          photo.image.attach(io: File.open(temp_file.path), filename: "picsum_#{id}.jpg", content_type: "image/jpeg")
+
+          if photo.save
+            puts "  -> Successfully saved Photo ID: #{photo.id}"
+          else
+            puts "  -> Failed: #{photo.errors.full_messages.join(', ')}"
+          end
         else
-          puts "  -> Failed: #{photo.errors.full_messages.join(', ')}"
+          puts "  -> Failed to download image #{id}."
         end
       rescue => e
         puts "  -> Error downloading image #{id}: #{e.message}"
+      ensure
+        temp_file.close
+        temp_file.unlink
       end
     end
 
