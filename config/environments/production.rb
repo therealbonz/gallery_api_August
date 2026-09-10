@@ -38,8 +38,14 @@ Rails.application.configure do
   # config.action_cable.url = 'wss://example.com/cable'
   # config.action_cable.allowed_request_origins = [ 'http://example.com', /http:\/\/example.*/ ]
 
-  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  # Allow requests from domain and localhost
+  config.hosts = [
+    "therealbonz.com",
+    "www.therealbonz.com",
+    "162.35.101.183",
+    "127.0.0.1",
+    "localhost"
+  ]
 
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).

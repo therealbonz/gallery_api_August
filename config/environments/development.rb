@@ -58,6 +58,15 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
 
+  # Allow requests from domain and localhost
+  config.hosts = [
+    "therealbonz.com",
+    "www.therealbonz.com",
+    "162.35.101.183",
+    "127.0.0.1",
+    "localhost"
+  ]
+
   # Use FileUpdateChecker instead of EventedFileUpdateChecker to prevent
   # ThreadError in Ruby 3.2+ trap context during finalization.
   config.file_watcher = ActiveSupport::FileUpdateChecker

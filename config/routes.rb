@@ -18,6 +18,12 @@ Rails.application.routes.draw do
       post '/signup', to: 'users#create'
       post '/login', to: 'sessions#create'
       get '/me', to: 'sessions#me'
+
+      # Network Stream Broadcasting & WebRTC Signaling
+      post '/stream/cast', to: 'streams#cast'
+      get '/stream/status', to: 'streams#status'
+      post '/stream/signal', to: 'streams#signal'
+      get '/stream/signals', to: 'streams#signals'
     end
   end
 end
